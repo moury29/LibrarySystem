@@ -1,0 +1,7 @@
+*.class
+bin/
+out/
+.vscode/
+.idea/
+database/library.db
+.DS_Store

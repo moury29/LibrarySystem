@@ -1,10 +1,9 @@
 package library;
 
-import library.ui.ConsoleUI;
-import library.ui.LibraryGUI;
-import library.dao.DatabaseConnection;
-import javax.swing.SwingUtilities;
 import java.sql.SQLException;
+import javax.swing.SwingUtilities;
+import library.dao.DatabaseConnection;
+import library.ui.LoginGUI;
 
 public class Main {
     public static void main(String[] args) {
@@ -15,13 +14,6 @@ public class Main {
             System.exit(1);
         }
 
-        boolean useConsole = args.length > 0 && args[0].equalsIgnoreCase("console");
-
-        if (useConsole) {
-            new ConsoleUI().start();
-            DatabaseConnection.closeConnection();
-        } else {
-            SwingUtilities.invokeLater(() -> new LibraryGUI().setVisible(true));
-        }
+        SwingUtilities.invokeLater(() -> new LoginGUI().setVisible(true));
     }
 }
