@@ -37,7 +37,7 @@ public class LibraryGUI extends JFrame {
         setResizable(true);
         setLayout(new BorderLayout());
 
-        // ── HEADER ────────────────────────────────────────────────────
+        //  HEADER 
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(new Color(30, 80, 140));
         header.setPreferredSize(new Dimension(0, 55));
@@ -72,10 +72,10 @@ public class LibraryGUI extends JFrame {
         header.add(titleLabel, BorderLayout.CENTER);
         add(header, BorderLayout.NORTH);
 
-        // ── BODY (sidebar + content) ───────────────────────────────────
+        //  BODY (sidebar + content) 
         JPanel body = new JPanel(new BorderLayout());
 
-        // ── LEFT SIDEBAR ──────────────────────────────────────────────
+        //  LEFT SIDEBAR 
         JPanel sidebar = new JPanel();
         sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
         sidebar.setBackground(new Color(40, 40, 60));
@@ -101,7 +101,7 @@ public class LibraryGUI extends JFrame {
         sidebar.add(searchBtn);
         sidebar.add(Box.createVerticalGlue());
 
-        // ── CONTENT PANEL (CardLayout) ────────────────────────────────
+        //  CONTENT PANEL (CardLayout) 
         cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
         contentPanel.setBackground(Color.WHITE);
@@ -115,7 +115,7 @@ public class LibraryGUI extends JFrame {
         body.add(contentPanel, BorderLayout.CENTER);
         add(body, BorderLayout.CENTER);
 
-        // ── STATUS BAR ────────────────────────────────────────────────
+        //  STATUS BAR 
         statusBar = new JLabel("  Ready");
         statusBar.setFont(new Font("SansSerif", Font.PLAIN, 12));
         statusBar.setOpaque(true);
@@ -152,7 +152,7 @@ public class LibraryGUI extends JFrame {
         refreshBorrows();
     }
 
-    // ── SIDEBAR BUTTON ────────────────────────────────────────────────────
+    // SIDEBAR BUTTONS
 
     private JButton sidebarButton(String text) {
         JButton btn = new JButton(text);
@@ -190,7 +190,7 @@ public class LibraryGUI extends JFrame {
         activeBtn.setFont(new Font("SansSerif", Font.BOLD, 14));
     }
 
-    // ── BOOKS PANEL ───────────────────────────────────────────────────────
+    // BOOKS PANEL 
 
     private JPanel buildBooksPanel() {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
@@ -287,7 +287,7 @@ public class LibraryGUI extends JFrame {
         }
     }
 
-    // ── MEMBERS PANEL ─────────────────────────────────────────────────────
+    //  MEMBERS PANEL 
 
     private JPanel buildMembersPanel() {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
@@ -381,7 +381,7 @@ public class LibraryGUI extends JFrame {
         }
     }
 
-    // ── BORROW PANEL ──────────────────────────────────────────────────────
+    // BORROW PANEL 
 
     private JPanel buildBorrowPanel() {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
@@ -494,7 +494,7 @@ public class LibraryGUI extends JFrame {
         JOptionPane.showMessageDialog(this, new JScrollPane(t), "Overdue Records (" + overdue.size() + ")", JOptionPane.WARNING_MESSAGE);
     }
 
-    // ── SEARCH PANEL ──────────────────────────────────────────────────────
+    // SEARCH PANEL 
 
     private JPanel buildSearchPanel() {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
@@ -569,7 +569,7 @@ public class LibraryGUI extends JFrame {
         return panel;
     }
 
-    // ── HELPERS ───────────────────────────────────────────────────────────
+    // HELPERS 
 
     private void styleTable(JTable table) {
         table.setRowHeight(26);

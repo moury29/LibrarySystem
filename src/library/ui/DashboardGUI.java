@@ -1,12 +1,12 @@
 package library.ui;
 
-import library.dao.*;
-import library.model.*;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.util.List;
+import javax.swing.*;
+import library.dao.*;
+import library.model.*;
 
 public class DashboardGUI extends JFrame {
 
@@ -40,7 +40,7 @@ public class DashboardGUI extends JFrame {
         add(statusBar, BorderLayout.SOUTH);
     }
 
-    // ── HEADER ────────────────────────────────────────────────────────────
+    //  HEADER 
 
     private JPanel buildHeader() {
         JPanel headerPanel = new JPanel(new BorderLayout());
@@ -94,7 +94,7 @@ public class DashboardGUI extends JFrame {
         return headerPanel;
     }
 
-    // ── DASHBOARD PANEL ───────────────────────────────────────────────────
+    //  DASHBOARD PANEL 
 
     private JPanel buildDashboardPanel() {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
@@ -166,7 +166,7 @@ public class DashboardGUI extends JFrame {
         return panel;
     }
 
-    // ── MODULE PANELS ─────────────────────────────────────────────────────
+    //  MODULE PANELS 
 
     private JPanel buildModulePanel(String moduleName) {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
@@ -225,7 +225,7 @@ public class DashboardGUI extends JFrame {
         return panel;
     }
 
-    // ── STAT CARD WITH HOVER ──────────────────────────────────────────────
+    //  STAT CARD WITH HOVER EFFECT
 
     private JPanel createStatCard(String title, String value, Color color) {
         JPanel card = new JPanel(new BorderLayout());

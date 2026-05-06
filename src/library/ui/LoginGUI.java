@@ -15,10 +15,10 @@ public class LoginGUI extends JFrame {
         setResizable(true);
         setLayout(new BorderLayout());
 
-        // ── MAIN PANEL (left blue + right white) ─────────────────────
+        //  MAIN PANEL (left blue + right white) 
         JPanel mainPanel = new JPanel(new GridLayout(1, 2));
 
-        // ── LEFT SIDE (blue background with logo) ────────────────────
+        //  LEFT SIDE (blue background with logo) 
         JPanel leftPanel = new JPanel();
         leftPanel.setBackground(new Color(30, 80, 140));
         leftPanel.setLayout(new GridBagLayout());
@@ -66,7 +66,7 @@ public class LoginGUI extends JFrame {
 
         leftPanel.add(leftContent);
 
-        // ── RIGHT SIDE (white login form) ────────────────────────────
+        //  RIGHT SIDE (white login form) 
         JPanel rightPanel = new JPanel();
         rightPanel.setBackground(Color.WHITE);
         rightPanel.setLayout(new GridBagLayout());

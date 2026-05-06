@@ -1,9 +1,9 @@
 package library.ui;
 
-import library.dao.*;
-import library.model.*;
 import java.util.List;
 import java.util.Scanner;
+import library.dao.*;
+import library.model.*;
 
 public class ConsoleUI {
 
@@ -39,7 +39,7 @@ public class ConsoleUI {
         }
     }
 
-    // ── BOOKS ──────────────────────────────────────────────────────────────
+    //  BOOKS
 
     private void booksMenu() {
         boolean back = false;
@@ -133,7 +133,7 @@ public class ConsoleUI {
         else System.out.println("[✗] Failed to delete.");
     }
 
-    // ── MEMBERS ────────────────────────────────────────────────────────────
+    // MEMBERS 
 
     private void membersMenu() {
         boolean back = false;
@@ -221,7 +221,7 @@ public class ConsoleUI {
         else System.out.println("[✗] Failed to delete.");
     }
 
-    // ── BORROW ─────────────────────────────────────────────────────────────
+    // BORROWING RECORDS 
 
     private void borrowMenu() {
         boolean back = false;
@@ -317,7 +317,7 @@ public class ConsoleUI {
         else { System.out.println("[!] " + overdue.size() + " overdue record(s):"); listRecords(overdue); }
     }
 
-    // ── SEARCH ─────────────────────────────────────────────────────────────
+    //  SEARCH 
 
     private void searchMenu() {
         boolean back = false;
