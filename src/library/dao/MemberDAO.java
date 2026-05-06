@@ -1,15 +1,18 @@
 package library.dao;
 
-import library.model.Member;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import library.model.Member;
 
 public class MemberDAO {
 
     public boolean addMember(Member member) {
+        // Check for duplicate email first
+        if (emailExists(member.getEmail())) return false;
         String sql = "INSERT INTO members (member_name, email, membership_type) VALUES (?, ?, ?)";
-        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
+        try (PreparedStatement ps =
+                 DatabaseConnection.getConnection().prepareStatement(sql)) {
             ps.setString(1, member.getMemberName());
             ps.setString(2, member.getEmail());
             ps.setString(3, member.getMembershipType());
@@ -17,6 +20,18 @@ public class MemberDAO {
             return true;
         } catch (SQLException e) {
             System.err.println("Error adding member: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean emailExists(String email) {
+        String sql = "SELECT COUNT(*) AS cnt FROM members WHERE LOWER(email) = LOWER(?)";
+        try (PreparedStatement ps =
+                 DatabaseConnection.getConnection().prepareStatement(sql)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            return rs.next() && rs.getInt("cnt") > 0;
+        } catch (SQLException e) {
             return false;
         }
     }
@@ -35,7 +50,8 @@ public class MemberDAO {
 
     public Member getMemberById(int memberId) {
         String sql = "SELECT * FROM members WHERE member_id = ?";
-        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
+        try (PreparedStatement ps =
+                 DatabaseConnection.getConnection().prepareStatement(sql)) {
             ps.setInt(1, memberId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) return mapRow(rs);
@@ -47,10 +63,18 @@ public class MemberDAO {
 
     public List<Member> searchMembers(String keyword) {
         List<Member> members = new ArrayList<>();
-        String sql = "SELECT * FROM members WHERE LOWER(member_name) LIKE ? OR CAST(member_id AS TEXT) = ?";
-        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
-            ps.setString(1, "%" + keyword.toLowerCase() + "%");
-            ps.setString(2, keyword);
+        String sql = """
+            SELECT * FROM members
+            WHERE LOWER(member_name) LIKE ?
+               OR LOWER(email) LIKE ?
+               OR CAST(member_id AS TEXT) = ?
+            """;
+        try (PreparedStatement ps =
+                 DatabaseConnection.getConnection().prepareStatement(sql)) {
+            String kw = "%" + keyword.toLowerCase() + "%";
+            ps.setString(1, kw);
+            ps.setString(2, kw);
+            ps.setString(3, keyword);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) members.add(mapRow(rs));
         } catch (SQLException e) {
@@ -60,8 +84,12 @@ public class MemberDAO {
     }
 
     public boolean updateMember(Member member) {
-        String sql = "UPDATE members SET member_name=?, email=?, membership_type=? WHERE member_id=?";
-        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
+        String sql = """
+            UPDATE members SET member_name=?, email=?, membership_type=?
+            WHERE member_id=?
+            """;
+        try (PreparedStatement ps =
+                 DatabaseConnection.getConnection().prepareStatement(sql)) {
             ps.setString(1, member.getMemberName());
             ps.setString(2, member.getEmail());
             ps.setString(3, member.getMembershipType());
@@ -75,7 +103,8 @@ public class MemberDAO {
 
     public boolean deleteMember(int memberId) {
         String sql = "DELETE FROM members WHERE member_id = ?";
-        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
+        try (PreparedStatement ps =
+                 DatabaseConnection.getConnection().prepareStatement(sql)) {
             ps.setInt(1, memberId);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {

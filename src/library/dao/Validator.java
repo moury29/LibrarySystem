@@ -6,7 +6,8 @@ import java.time.format.DateTimeParseException;
 
 public class Validator {
 
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter DATE_FORMAT =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public static boolean isNotEmpty(String value) {
         return value != null && !value.trim().isEmpty();
@@ -47,13 +48,14 @@ public class Validator {
 
     public static boolean isValidMembershipType(String type) {
         return type != null &&
-               (type.equalsIgnoreCase("Student") || type.equalsIgnoreCase("Staff"));
+               (type.equalsIgnoreCase("Student") ||
+                type.equalsIgnoreCase("Staff"));
     }
 
     public static boolean isValidAvailabilityStatus(String status) {
         return status != null && (
             status.equalsIgnoreCase("Available") ||
-            status.equalsIgnoreCase("Borrowed") ||
+            status.equalsIgnoreCase("Borrowed")  ||
             status.equalsIgnoreCase("Reserved")
         );
     }
@@ -64,5 +66,20 @@ public class Validator {
             status.equalsIgnoreCase("Returned") ||
             status.equalsIgnoreCase("Overdue")
         );
+    }
+
+    // Calculate fine — £0.50 per day overdue
+    public static double calculateFine(String dueDate) {
+        try {
+            LocalDate due = LocalDate.parse(dueDate, DATE_FORMAT);
+            LocalDate today = LocalDate.now();
+            if (today.isAfter(due)) {
+                long daysOverdue = java.time.temporal.ChronoUnit.DAYS.between(due, today);
+                return daysOverdue * 0.50;
+            }
+        } catch (DateTimeParseException e) {
+            return 0.0;
+        }
+        return 0.0;
     }
 }

@@ -22,11 +22,8 @@ public class LibraryGUI extends JFrame {
     private DefaultTableModel borrowTableModel;
     private JLabel statusBar;
 
-    // Main content panel that switches views
     private JPanel contentPanel;
     private CardLayout cardLayout;
-
-    // Sidebar buttons
     private JButton activeBtn = null;
 
     public LibraryGUI() {
@@ -37,7 +34,7 @@ public class LibraryGUI extends JFrame {
         setResizable(true);
         setLayout(new BorderLayout());
 
-        //  HEADER 
+        // ── HEADER ────────────────────────────────────────────────────
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(new Color(30, 80, 140));
         header.setPreferredSize(new Dimension(0, 55));
@@ -54,8 +51,12 @@ public class LibraryGUI extends JFrame {
         backBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         backBtn.setToolTipText("Back to Dashboard");
         backBtn.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) { backBtn.setBackground(new Color(20, 60, 120)); }
-            public void mouseExited(MouseEvent e)  { backBtn.setBackground(new Color(30, 80, 140)); }
+            public void mouseEntered(MouseEvent e) {
+                backBtn.setBackground(new Color(20, 60, 120));
+            }
+            public void mouseExited(MouseEvent e) {
+                backBtn.setBackground(new Color(30, 80, 140));
+            }
         });
         backBtn.addActionListener(e -> {
             executor.shutdown();
@@ -64,7 +65,8 @@ public class LibraryGUI extends JFrame {
         });
         leftHeader.add(backBtn);
 
-        JLabel titleLabel = new JLabel("Library Management System", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("Library Management System",
+            SwingConstants.CENTER);
         titleLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
         titleLabel.setForeground(Color.WHITE);
 
@@ -72,16 +74,15 @@ public class LibraryGUI extends JFrame {
         header.add(titleLabel, BorderLayout.CENTER);
         add(header, BorderLayout.NORTH);
 
-        //  BODY (sidebar + content) 
+        // ── BODY ──────────────────────────────────────────────────────
         JPanel body = new JPanel(new BorderLayout());
 
-        //  LEFT SIDEBAR 
+        // ── SIDEBAR ───────────────────────────────────────────────────
         JPanel sidebar = new JPanel();
         sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
         sidebar.setBackground(new Color(40, 40, 60));
         sidebar.setPreferredSize(new Dimension(200, 0));
 
-        // Sidebar title
         JLabel menuLabel = new JLabel("  MENU");
         menuLabel.setFont(new Font("SansSerif", Font.BOLD, 11));
         menuLabel.setForeground(new Color(150, 150, 180));
@@ -89,7 +90,6 @@ public class LibraryGUI extends JFrame {
         menuLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         sidebar.add(menuLabel);
 
-        // Sidebar buttons
         JButton booksBtn   = sidebarButton("📚  Books");
         JButton membersBtn = sidebarButton("👤  Members");
         JButton borrowBtn  = sidebarButton("📋  Borrow Records");
@@ -101,7 +101,7 @@ public class LibraryGUI extends JFrame {
         sidebar.add(searchBtn);
         sidebar.add(Box.createVerticalGlue());
 
-        //  CONTENT PANEL (CardLayout) 
+        // ── CONTENT ───────────────────────────────────────────────────
         cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
         contentPanel.setBackground(Color.WHITE);
@@ -115,7 +115,7 @@ public class LibraryGUI extends JFrame {
         body.add(contentPanel, BorderLayout.CENTER);
         add(body, BorderLayout.CENTER);
 
-        //  STATUS BAR 
+        // ── STATUS BAR ────────────────────────────────────────────────
         statusBar = new JLabel("  Ready");
         statusBar.setFont(new Font("SansSerif", Font.PLAIN, 12));
         statusBar.setOpaque(true);
@@ -123,7 +123,7 @@ public class LibraryGUI extends JFrame {
         statusBar.setPreferredSize(new Dimension(0, 25));
         add(statusBar, BorderLayout.SOUTH);
 
-        // Sidebar button actions
+        // Sidebar actions
         booksBtn.addActionListener(e -> {
             cardLayout.show(contentPanel, "Books");
             setActiveBtn(booksBtn);
@@ -152,7 +152,7 @@ public class LibraryGUI extends JFrame {
         refreshBorrows();
     }
 
-    // SIDEBAR BUTTONS
+    // ── SIDEBAR BUTTON ────────────────────────────────────────────────────
 
     private JButton sidebarButton(String text) {
         JButton btn = new JButton(text);
@@ -166,13 +166,14 @@ public class LibraryGUI extends JFrame {
         btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
         btn.setAlignmentX(Component.LEFT_ALIGNMENT);
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
         btn.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
-                if (btn != activeBtn) btn.setBackground(new Color(60, 60, 90));
+                if (btn != activeBtn)
+                    btn.setBackground(new Color(60, 60, 90));
             }
             public void mouseExited(MouseEvent e) {
-                if (btn != activeBtn) btn.setBackground(new Color(40, 40, 60));
+                if (btn != activeBtn)
+                    btn.setBackground(new Color(40, 40, 60));
             }
         });
         return btn;
@@ -190,7 +191,7 @@ public class LibraryGUI extends JFrame {
         activeBtn.setFont(new Font("SansSerif", Font.BOLD, 14));
     }
 
-    // BOOKS PANEL 
+    // ── BOOKS PANEL ───────────────────────────────────────────────────────
 
     private JPanel buildBooksPanel() {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
@@ -201,8 +202,32 @@ public class LibraryGUI extends JFrame {
         title.setFont(new Font("SansSerif", Font.BOLD, 18));
         title.setForeground(new Color(30, 80, 140));
         title.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
-        panel.add(title, BorderLayout.NORTH);
 
+        // Search bar
+        JPanel searchBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        searchBar.setBackground(Color.WHITE);
+        JTextField bookSearch = new JTextField(20);
+        bookSearch.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        bookSearch.setPreferredSize(new Dimension(200, 30));
+        bookSearch.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(180, 180, 180)),
+            BorderFactory.createEmptyBorder(3, 8, 3, 8)));
+        JButton bookSearchBtn = styledButton("🔍 Search",
+            new Color(30, 80, 140), null);
+        JButton bookClearBtn  = styledButton("✕ Clear",
+            new Color(120, 120, 120), null);
+        searchBar.add(new JLabel("Search: "));
+        searchBar.add(bookSearch);
+        searchBar.add(bookSearchBtn);
+        searchBar.add(bookClearBtn);
+
+        JPanel topSection = new JPanel(new BorderLayout());
+        topSection.setBackground(Color.WHITE);
+        topSection.add(title, BorderLayout.NORTH);
+        topSection.add(searchBar, BorderLayout.CENTER);
+        panel.add(topSection, BorderLayout.NORTH);
+
+        // Table
         String[] cols = {"ID", "Title", "Author", "Category", "Status"};
         bookTableModel = new DefaultTableModel(cols, 0) {
             public boolean isCellEditable(int r, int c) { return false; }
@@ -211,13 +236,37 @@ public class LibraryGUI extends JFrame {
         styleTable(table);
         panel.add(new JScrollPane(table), BorderLayout.CENTER);
 
+        // Buttons
         JPanel btnBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
         btnBar.setBackground(Color.WHITE);
-        btnBar.add(styledButton("➕ Add Book",    new Color(46, 139, 87),  e -> showAddBookDialog()));
-        btnBar.add(styledButton("✏ Update",       new Color(70, 130, 180), e -> showEditBookDialog(table)));
-        btnBar.add(styledButton("🗑 Delete",      new Color(178, 34, 34),  e -> deleteSelectedBook(table)));
-        btnBar.add(styledButton("🔄 Refresh",     new Color(100, 100, 100),e -> refreshBooks()));
+        btnBar.add(styledButton("➕ Add Book",
+            new Color(46, 139, 87),   e -> showAddBookDialog()));
+        btnBar.add(styledButton("✏ Update",
+            new Color(70, 130, 180),  e -> showEditBookDialog(table)));
+        btnBar.add(styledButton("🗑 Delete",
+            new Color(178, 34, 34),   e -> deleteSelectedBook(table)));
+        btnBar.add(styledButton("🔄 Refresh",
+            new Color(100, 100, 100), e -> refreshBooks()));
         panel.add(btnBar, BorderLayout.SOUTH);
+
+        // Search actions
+        bookSearchBtn.addActionListener(e -> {
+            String kw = bookSearch.getText().trim();
+            if (kw.isEmpty()) { refreshBooks(); return; }
+            List<Book> results = bookDAO.searchBooks(kw);
+            bookTableModel.setRowCount(0);
+            for (Book b : results)
+                bookTableModel.addRow(new Object[]{
+                    b.getBookId(), b.getTitle(),
+                    b.getAuthor(), b.getCategory(),
+                    b.getAvailabilityStatus()});
+            setStatus("Found " + results.size() + " book(s).");
+        });
+        bookSearch.addActionListener(e -> bookSearchBtn.doClick());
+        bookClearBtn.addActionListener(e -> {
+            bookSearch.setText("");
+            refreshBooks();
+        });
 
         return panel;
     }
@@ -239,55 +288,136 @@ public class LibraryGUI extends JFrame {
     }
 
     private void showAddBookDialog() {
-        JTextField titleF = new JTextField(20), authorF = new JTextField(20), categoryF = new JTextField(20);
-        JComboBox<String> statusBox = new JComboBox<>(new String[]{"Available","Borrowed","Reserved"});
-        JPanel form = buildFormPanel("Title:", titleF, "Author:", authorF, "Category:", categoryF, "Status:", statusBox);
+        JTextField titleF    = new JTextField(20);
+        JTextField authorF   = new JTextField(20);
+        JTextField categoryF = new JTextField(20);
 
-        if (JOptionPane.showConfirmDialog(this, form, "Add New Book", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-            if (!Validator.isNotEmpty(titleF.getText()) || !Validator.isNotEmpty(authorF.getText()) || !Validator.isNotEmpty(categoryF.getText())) {
-                showError("All fields are required."); return;
+        // Add book — only Available or Reserved
+        // Borrowed is set automatically when borrow record is created
+        JComboBox<String> statusBox = new JComboBox<>(
+            new String[]{"Available", "Reserved"});
+
+        JPanel form = buildFormPanel(
+            "Title:",    titleF,
+            "Author:",   authorF,
+            "Category:", categoryF,
+            "Status:",   statusBox
+        );
+
+        int result = JOptionPane.showConfirmDialog(this, form,
+            "Add New Book", JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION) {
+            String t = titleF.getText().trim();
+            String a = authorF.getText().trim();
+            String c = categoryF.getText().trim();
+
+            if (!Validator.isNotEmpty(t)) {
+                showError("Title cannot be empty."); return;
             }
-            if (bookDAO.addBook(new Book(titleF.getText().trim(), authorF.getText().trim(), categoryF.getText().trim(), (String)statusBox.getSelectedItem()))) {
-                showSuccess("Book added successfully!"); refreshBooks();
-            } else showError("Failed to add book.");
+            if (!Validator.isNotEmpty(a)) {
+                showError("Author cannot be empty."); return;
+            }
+            if (!Validator.isNotEmpty(c)) {
+                showError("Category cannot be empty."); return;
+            }
+
+            Book book = new Book(t, a, c,
+                (String) statusBox.getSelectedItem());
+            if (bookDAO.addBook(book)) {
+                showSuccess("Book added successfully!");
+                refreshBooks();
+            } else {
+                showError("Failed to add book. Please try again.");
+            }
         }
     }
 
     private void showEditBookDialog(JTable table) {
         int row = table.getSelectedRow();
-        if (row < 0) { showError("Please select a book to update."); return; }
-        Book book = bookDAO.getBookById((int) table.getValueAt(row, 0));
-        if (book == null) return;
+        if (row < 0) {
+            showError("Please select a book to update."); return;
+        }
+        int bookId = (int) table.getValueAt(row, 0);
+        Book book  = bookDAO.getBookById(bookId);
+        if (book == null) { showError("Book not found."); return; }
 
-        JTextField titleF = new JTextField(book.getTitle(), 20);
-        JTextField authorF = new JTextField(book.getAuthor(), 20);
+        JTextField titleF    = new JTextField(book.getTitle(), 20);
+        JTextField authorF   = new JTextField(book.getAuthor(), 20);
         JTextField categoryF = new JTextField(book.getCategory(), 20);
-        JComboBox<String> statusBox = new JComboBox<>(new String[]{"Available","Borrowed","Reserved"});
-        statusBox.setSelectedItem(book.getAvailabilityStatus());
-        JPanel form = buildFormPanel("Title:", titleF, "Author:", authorF, "Category:", categoryF, "Status:", statusBox);
 
-        if (JOptionPane.showConfirmDialog(this, form, "Update Book #" + book.getBookId(), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-            book.setTitle(titleF.getText().trim());
-            book.setAuthor(authorF.getText().trim());
-            book.setCategory(categoryF.getText().trim());
+        // Update book — all 3 statuses available
+        JComboBox<String> statusBox = new JComboBox<>(
+            new String[]{"Available", "Borrowed", "Reserved"});
+        statusBox.setSelectedItem(book.getAvailabilityStatus());
+
+        JPanel form = buildFormPanel(
+            "Title:",    titleF,
+            "Author:",   authorF,
+            "Category:", categoryF,
+            "Status:",   statusBox
+        );
+
+        int result = JOptionPane.showConfirmDialog(this, form,
+            "Update Book #" + bookId, JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION) {
+            String t = titleF.getText().trim();
+            String a = authorF.getText().trim();
+            String c = categoryF.getText().trim();
+
+            if (!Validator.isNotEmpty(t)) {
+                showError("Title cannot be empty."); return;
+            }
+            if (!Validator.isNotEmpty(a)) {
+                showError("Author cannot be empty."); return;
+            }
+            if (!Validator.isNotEmpty(c)) {
+                showError("Category cannot be empty."); return;
+            }
+
+            book.setTitle(t);
+            book.setAuthor(a);
+            book.setCategory(c);
             book.setAvailabilityStatus((String) statusBox.getSelectedItem());
-            if (bookDAO.updateBook(book)) { showSuccess("Book updated successfully!"); refreshBooks(); }
-            else showError("Failed to update book.");
+
+            if (bookDAO.updateBook(book)) {
+                showSuccess("Book updated successfully!");
+                refreshBooks();
+            } else {
+                showError("Failed to update book.");
+            }
         }
     }
 
     private void deleteSelectedBook(JTable table) {
         int row = table.getSelectedRow();
-        if (row < 0) { showError("Please select a book to delete."); return; }
-        int id = (int) table.getValueAt(row, 0);
+        if (row < 0) {
+            showError("Please select a book to delete."); return;
+        }
+        int bookId   = (int) table.getValueAt(row, 0);
         String title = (String) table.getValueAt(row, 1);
-        if (JOptionPane.showConfirmDialog(this, "Delete \"" + title + "\"?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-            if (bookDAO.deleteBook(id)) { showSuccess("Book deleted successfully!"); refreshBooks(); }
-            else showError("Failed to delete.");
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+            "Are you sure you want to delete:\n\"" + title + "\"?\n" +
+            "This cannot be undone.",
+            "Confirm Delete",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            if (bookDAO.deleteBook(bookId)) {
+                showSuccess("Book deleted successfully!");
+                refreshBooks();
+            } else {
+                showError("Failed to delete book.");
+            }
         }
     }
 
-    //  MEMBERS PANEL 
+    // ── MEMBERS PANEL ─────────────────────────────────────────────────────
 
     private JPanel buildMembersPanel() {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
@@ -298,8 +428,32 @@ public class LibraryGUI extends JFrame {
         title.setFont(new Font("SansSerif", Font.BOLD, 18));
         title.setForeground(new Color(30, 80, 140));
         title.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
-        panel.add(title, BorderLayout.NORTH);
 
+        // Search bar
+        JPanel searchBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        searchBar.setBackground(Color.WHITE);
+        JTextField memberSearch = new JTextField(20);
+        memberSearch.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        memberSearch.setPreferredSize(new Dimension(200, 30));
+        memberSearch.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(180, 180, 180)),
+            BorderFactory.createEmptyBorder(3, 8, 3, 8)));
+        JButton memberSearchBtn = styledButton("🔍 Search",
+            new Color(30, 80, 140), null);
+        JButton memberClearBtn  = styledButton("✕ Clear",
+            new Color(120, 120, 120), null);
+        searchBar.add(new JLabel("Search: "));
+        searchBar.add(memberSearch);
+        searchBar.add(memberSearchBtn);
+        searchBar.add(memberClearBtn);
+
+        JPanel topSection = new JPanel(new BorderLayout());
+        topSection.setBackground(Color.WHITE);
+        topSection.add(title, BorderLayout.NORTH);
+        topSection.add(searchBar, BorderLayout.CENTER);
+        panel.add(topSection, BorderLayout.NORTH);
+
+        // Table
         String[] cols = {"ID", "Name", "Email", "Membership Type"};
         memberTableModel = new DefaultTableModel(cols, 0) {
             public boolean isCellEditable(int r, int c) { return false; }
@@ -308,13 +462,36 @@ public class LibraryGUI extends JFrame {
         styleTable(table);
         panel.add(new JScrollPane(table), BorderLayout.CENTER);
 
+        // Buttons
         JPanel btnBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
         btnBar.setBackground(Color.WHITE);
-        btnBar.add(styledButton("➕ Add Member",  new Color(46, 139, 87),  e -> showAddMemberDialog()));
-        btnBar.add(styledButton("✏ Update",       new Color(70, 130, 180), e -> showEditMemberDialog(table)));
-        btnBar.add(styledButton("🗑 Delete",      new Color(178, 34, 34),  e -> deleteSelectedMember(table)));
-        btnBar.add(styledButton("🔄 Refresh",     new Color(100, 100, 100),e -> refreshMembers()));
+        btnBar.add(styledButton("➕ Add Member",
+            new Color(46, 139, 87),   e -> showAddMemberDialog()));
+        btnBar.add(styledButton("✏ Update",
+            new Color(70, 130, 180),  e -> showEditMemberDialog(table)));
+        btnBar.add(styledButton("🗑 Delete",
+            new Color(178, 34, 34),   e -> deleteSelectedMember(table)));
+        btnBar.add(styledButton("🔄 Refresh",
+            new Color(100, 100, 100), e -> refreshMembers()));
         panel.add(btnBar, BorderLayout.SOUTH);
+
+        // Search actions
+        memberSearchBtn.addActionListener(e -> {
+            String kw = memberSearch.getText().trim();
+            if (kw.isEmpty()) { refreshMembers(); return; }
+            List<Member> results = memberDAO.searchMembers(kw);
+            memberTableModel.setRowCount(0);
+            for (Member m : results)
+                memberTableModel.addRow(new Object[]{
+                    m.getMemberId(), m.getMemberName(),
+                    m.getEmail(), m.getMembershipType()});
+            setStatus("Found " + results.size() + " member(s).");
+        });
+        memberSearch.addActionListener(e -> memberSearchBtn.doClick());
+        memberClearBtn.addActionListener(e -> {
+            memberSearch.setText("");
+            refreshMembers();
+        });
 
         return panel;
     }
@@ -329,59 +506,128 @@ public class LibraryGUI extends JFrame {
                     memberTableModel.addRow(new Object[]{
                         m.getMemberId(), m.getMemberName(),
                         m.getEmail(), m.getMembershipType()});
-                setStatus("Members loaded: " + members.size() + " record(s).");
+                setStatus("Members loaded: " +
+                    members.size() + " record(s).");
             });
         });
     }
 
     private void showAddMemberDialog() {
-        JTextField nameF = new JTextField(20), emailF = new JTextField(20);
-        JComboBox<String> typeBox = new JComboBox<>(new String[]{"Student","Staff"});
-        JPanel form = buildFormPanel("Name:", nameF, "Email:", emailF, "Membership Type:", typeBox);
+        JTextField nameF  = new JTextField(20);
+        JTextField emailF = new JTextField(20);
+        JComboBox<String> typeBox = new JComboBox<>(
+            new String[]{"Student", "Staff"});
 
-        if (JOptionPane.showConfirmDialog(this, form, "Add New Member", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-            if (!Validator.isNotEmpty(nameF.getText())) { showError("Name cannot be empty."); return; }
-            if (!Validator.isValidEmail(emailF.getText().trim())) { showError("Invalid email format."); return; }
-            if (memberDAO.addMember(new Member(nameF.getText().trim(), emailF.getText().trim(), (String)typeBox.getSelectedItem()))) {
-                showSuccess("Member registered successfully!"); refreshMembers();
-            } else showError("Failed to register member.");
+        JPanel form = buildFormPanel(
+            "Name:",            nameF,
+            "Email:",           emailF,
+            "Membership Type:", typeBox
+        );
+
+        int result = JOptionPane.showConfirmDialog(this, form,
+            "Add New Member", JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION) {
+            String name  = nameF.getText().trim();
+            String email = emailF.getText().trim();
+            String type  = (String) typeBox.getSelectedItem();
+
+            if (!Validator.isNotEmpty(name)) {
+                showError("Name cannot be empty."); return;
+            }
+            if (!Validator.isValidEmail(email)) {
+                showError("Invalid email format.\n" +
+                    "Example: john@stmarys.ac.uk"); return;
+            }
+            if (memberDAO.emailExists(email)) {
+                showError("A member with this email already exists."); return;
+            }
+
+            if (memberDAO.addMember(new Member(name, email, type))) {
+                showSuccess("Member registered successfully!");
+                refreshMembers();
+            } else {
+                showError("Failed to register member.");
+            }
         }
     }
 
     private void showEditMemberDialog(JTable table) {
         int row = table.getSelectedRow();
-        if (row < 0) { showError("Please select a member to update."); return; }
-        Member member = memberDAO.getMemberById((int) table.getValueAt(row, 0));
-        if (member == null) return;
+        if (row < 0) {
+            showError("Please select a member to update."); return;
+        }
+        int memberId = (int) table.getValueAt(row, 0);
+        Member member = memberDAO.getMemberById(memberId);
+        if (member == null) { showError("Member not found."); return; }
 
-        JTextField nameF = new JTextField(member.getMemberName(), 20);
+        JTextField nameF  = new JTextField(member.getMemberName(), 20);
         JTextField emailF = new JTextField(member.getEmail(), 20);
-        JComboBox<String> typeBox = new JComboBox<>(new String[]{"Student","Staff"});
+        JComboBox<String> typeBox = new JComboBox<>(
+            new String[]{"Student", "Staff"});
         typeBox.setSelectedItem(member.getMembershipType());
-        JPanel form = buildFormPanel("Name:", nameF, "Email:", emailF, "Membership Type:", typeBox);
 
-        if (JOptionPane.showConfirmDialog(this, form, "Update Member #" + member.getMemberId(), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-            if (!Validator.isValidEmail(emailF.getText().trim())) { showError("Invalid email."); return; }
-            member.setMemberName(nameF.getText().trim());
-            member.setEmail(emailF.getText().trim());
+        JPanel form = buildFormPanel(
+            "Name:",            nameF,
+            "Email:",           emailF,
+            "Membership Type:", typeBox
+        );
+
+        int result = JOptionPane.showConfirmDialog(this, form,
+            "Update Member #" + memberId, JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION) {
+            String name  = nameF.getText().trim();
+            String email = emailF.getText().trim();
+
+            if (!Validator.isNotEmpty(name)) {
+                showError("Name cannot be empty."); return;
+            }
+            if (!Validator.isValidEmail(email)) {
+                showError("Invalid email format."); return;
+            }
+
+            member.setMemberName(name);
+            member.setEmail(email);
             member.setMembershipType((String) typeBox.getSelectedItem());
-            if (memberDAO.updateMember(member)) { showSuccess("Member updated successfully!"); refreshMembers(); }
-            else showError("Failed to update member.");
+
+            if (memberDAO.updateMember(member)) {
+                showSuccess("Member updated successfully!");
+                refreshMembers();
+            } else {
+                showError("Failed to update member.");
+            }
         }
     }
 
     private void deleteSelectedMember(JTable table) {
         int row = table.getSelectedRow();
-        if (row < 0) { showError("Please select a member to delete."); return; }
-        int id = (int) table.getValueAt(row, 0);
-        String name = (String) table.getValueAt(row, 1);
-        if (JOptionPane.showConfirmDialog(this, "Delete \"" + name + "\"?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-            if (memberDAO.deleteMember(id)) { showSuccess("Member deleted successfully!"); refreshMembers(); }
-            else showError("Failed to delete.");
+        if (row < 0) {
+            showError("Please select a member to delete."); return;
+        }
+        int memberId = (int) table.getValueAt(row, 0);
+        String name  = (String) table.getValueAt(row, 1);
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+            "Are you sure you want to delete member:\n\"" +
+            name + "\"?\nThis cannot be undone.",
+            "Confirm Delete",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            if (memberDAO.deleteMember(memberId)) {
+                showSuccess("Member deleted successfully!");
+                refreshMembers();
+            } else {
+                showError("Failed to delete member.");
+            }
         }
     }
 
-    // BORROW PANEL 
+    // ── BORROW PANEL ──────────────────────────────────────────────────────
 
     private JPanel buildBorrowPanel() {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
@@ -394,7 +640,10 @@ public class LibraryGUI extends JFrame {
         title.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
         panel.add(title, BorderLayout.NORTH);
 
-        String[] cols = {"Record ID", "Book ID", "Member ID", "Borrow Date", "Due Date", "Status"};
+        // Table with fine and return date columns
+        String[] cols = {"Record ID", "Book ID", "Member ID",
+                         "Borrow Date", "Due Date", "Status",
+                         "Return Date", "Fine (£)"};
         borrowTableModel = new DefaultTableModel(cols, 0) {
             public boolean isCellEditable(int r, int c) { return false; }
         };
@@ -402,13 +651,19 @@ public class LibraryGUI extends JFrame {
         styleTable(table);
         panel.add(new JScrollPane(table), BorderLayout.CENTER);
 
+        // Buttons
         JPanel btnBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
         btnBar.setBackground(Color.WHITE);
-        btnBar.add(styledButton("➕ Add Record",   new Color(46, 139, 87),  e -> showAddBorrowDialog()));
-        btnBar.add(styledButton("✏ Update Status", new Color(70, 130, 180), e -> showUpdateStatusDialog(table)));
-        btnBar.add(styledButton("🗑 Delete",       new Color(178, 34, 34),  e -> deleteSelectedRecord(table)));
-        btnBar.add(styledButton("⚠ Overdue",      new Color(200, 120, 0),  e -> showOverdueRecords()));
-        btnBar.add(styledButton("🔄 Refresh",      new Color(100, 100, 100),e -> refreshBorrows()));
+        btnBar.add(styledButton("➕ Add Record",
+            new Color(46, 139, 87),   e -> showAddBorrowDialog()));
+        btnBar.add(styledButton("📤 Return Book",
+            new Color(70, 130, 180),  e -> showUpdateStatusDialog(table)));
+        btnBar.add(styledButton("🗑 Delete",
+            new Color(178, 34, 34),   e -> deleteSelectedRecord(table)));
+        btnBar.add(styledButton("⚠ Overdue",
+            new Color(200, 120, 0),   e -> showOverdueRecords()));
+        btnBar.add(styledButton("🔄 Refresh",
+            new Color(100, 100, 100), e -> refreshBorrows()));
         panel.add(btnBar, BorderLayout.SOUTH);
 
         return panel;
@@ -422,79 +677,214 @@ public class LibraryGUI extends JFrame {
                 borrowTableModel.setRowCount(0);
                 for (BorrowRecord r : records)
                     borrowTableModel.addRow(new Object[]{
-                        r.getRecordId(), r.getBookId(), r.getMemberId(),
-                        r.getBorrowDate(), r.getDueDate(), r.getReturnStatus()});
-                setStatus("Records loaded: " + records.size() + " record(s).");
+                        r.getRecordId(),
+                        r.getBookId(),
+                        r.getMemberId(),
+                        r.getBorrowDate(),
+                        r.getDueDate(),
+                        r.getReturnStatus(),
+                        r.getReturnDate().isEmpty() ? "—" : r.getReturnDate(),
+                        r.getFine() > 0
+                            ? String.format("£%.2f", r.getFine()) : "—"
+                    });
+                setStatus("Records loaded: " +
+                    records.size() + " record(s).");
             });
         });
     }
 
     private void showAddBorrowDialog() {
-        JTextField bookIdF = new JTextField(10), memberIdF = new JTextField(10);
-        JTextField borrowF = new JTextField("2026-01-01", 10), dueF = new JTextField("2026-01-15", 10);
+        JTextField bookIdF   = new JTextField(10);
+        JTextField memberIdF = new JTextField(10);
+        JTextField borrowF   = new JTextField(
+            java.time.LocalDate.now().toString(), 10);
+        JTextField dueF      = new JTextField(
+            java.time.LocalDate.now().plusDays(14).toString(), 10);
+
         JPanel form = buildFormPanel(
-            "Book ID:", bookIdF, "Member ID:", memberIdF,
-            "Borrow Date (yyyy-MM-dd):", borrowF, "Due Date (yyyy-MM-dd):", dueF);
+            "Book ID:",                  bookIdF,
+            "Member ID:",                memberIdF,
+            "Borrow Date (yyyy-MM-dd):", borrowF,
+            "Due Date (yyyy-MM-dd):",    dueF
+        );
 
-        if (JOptionPane.showConfirmDialog(this, form, "Add Borrow Record", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-            String bid = bookIdF.getText().trim(), mid = memberIdF.getText().trim();
-            String borrow = borrowF.getText().trim(), due = dueF.getText().trim();
+        int result = JOptionPane.showConfirmDialog(this, form,
+            "Add Borrow Record", JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE);
 
-            if (!Validator.isPositiveInteger(bid))            { showError("Invalid Book ID."); return; }
-            if (!Validator.isPositiveInteger(mid))            { showError("Invalid Member ID."); return; }
-            if (!Validator.isValidDate(borrow))               { showError("Invalid borrow date."); return; }
-            if (!Validator.isValidDate(due))                  { showError("Invalid due date."); return; }
-            if (!Validator.isDueDateAfterBorrow(borrow, due)) { showError("Due date must be after borrow date."); return; }
-            if (bookDAO.getBookById(Integer.parseInt(bid)) == null)     { showError("Book ID not found."); return; }
-            if (memberDAO.getMemberById(Integer.parseInt(mid)) == null) { showError("Member ID not found."); return; }
+        if (result == JOptionPane.OK_OPTION) {
+            String bid    = bookIdF.getText().trim();
+            String mid    = memberIdF.getText().trim();
+            String borrow = borrowF.getText().trim();
+            String due    = dueF.getText().trim();
 
-            if (borrowDAO.addRecord(new BorrowRecord(Integer.parseInt(bid), Integer.parseInt(mid), borrow, due, "Borrowed"))) {
-                showSuccess("Borrow record created successfully!"); refreshBorrows(); refreshBooks();
-            } else showError("Failed to create record.");
+            if (!Validator.isPositiveInteger(bid)) {
+                showError("Invalid Book ID. Must be a positive number.");
+                return;
+            }
+            if (!Validator.isPositiveInteger(mid)) {
+                showError("Invalid Member ID. Must be a positive number.");
+                return;
+            }
+            if (!Validator.isValidDate(borrow)) {
+                showError("Invalid borrow date.\nUse format: yyyy-MM-dd");
+                return;
+            }
+            if (!Validator.isValidDate(due)) {
+                showError("Invalid due date.\nUse format: yyyy-MM-dd");
+                return;
+            }
+            if (!Validator.isDueDateAfterBorrow(borrow, due)) {
+                showError("Due date must be after borrow date."); return;
+            }
+
+            int bookId   = Integer.parseInt(bid);
+            int memberId = Integer.parseInt(mid);
+
+            if (bookDAO.getBookById(bookId) == null) {
+                showError("No book found with ID: " + bookId +
+                    "\nPlease check the Book ID."); return;
+            }
+            if (memberDAO.getMemberById(memberId) == null) {
+                showError("No member found with ID: " + memberId +
+                    "\nPlease check the Member ID."); return;
+            }
+            if (borrowDAO.isBookBorrowed(bookId)) {
+                showError("Book #" + bookId +
+                    " is already borrowed.\nPlease choose another book.");
+                return;
+            }
+
+            BorrowRecord rec = new BorrowRecord(
+                bookId, memberId, borrow, due, "Borrowed");
+
+            if (borrowDAO.addRecord(rec)) {
+                showSuccess("Borrow record created successfully!");
+                refreshBorrows();
+                refreshBooks();
+            } else {
+                showError("Failed to create borrow record.\n" +
+                    "Please try again.");
+            }
         }
     }
 
     private void showUpdateStatusDialog(JTable table) {
         int row = table.getSelectedRow();
-        if (row < 0) { showError("Please select a record to update."); return; }
-        int recordId = (int) table.getValueAt(row, 0);
-        JComboBox<String> statusBox = new JComboBox<>(new String[]{"Borrowed","Returned","Overdue"});
+        if (row < 0) {
+            showError("Please select a record to update."); return;
+        }
 
-        if (JOptionPane.showConfirmDialog(this, new Object[]{"New Status:", statusBox},
-            "Update Record #" + recordId, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-            if (borrowDAO.updateStatus(recordId, (String) statusBox.getSelectedItem())) {
-                showSuccess("Borrow record updated successfully!"); refreshBorrows(); refreshBooks();
-            } else showError("Failed to update.");
+        int recordId         = (int) table.getValueAt(row, 0);
+        String currentStatus = (String) table.getValueAt(row, 5);
+
+        if (currentStatus.equals("Returned")) {
+            showError("This book has already been returned."); return;
+        }
+
+        String[] options = {"Return Book", "Mark as Overdue", "Cancel"};
+        int choice = JOptionPane.showOptionDialog(this,
+            "What would you like to do with Record #" + recordId + "?",
+            "Update Record",
+            JOptionPane.DEFAULT_OPTION,
+            JOptionPane.QUESTION_MESSAGE,
+            null, options, options[0]);
+
+        if (choice == 0) {
+            BorrowRecord rec = borrowDAO.getRecordById(recordId);
+            if (rec != null) {
+                double fine = Validator.calculateFine(rec.getDueDate());
+                String msg  = "Confirm return for Record #" + recordId;
+                if (fine > 0) {
+                    msg += "\n\n⚠ Overdue fine: £" +
+                        String.format("%.2f", fine) +
+                        "\nThis will be charged to the member.";
+                } else {
+                    msg += "\n\n✓ No fine — returned on time!";
+                }
+                int confirm = JOptionPane.showConfirmDialog(this,
+                    msg, "Confirm Return", JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    if (borrowDAO.returnBook(recordId)) {
+                        if (fine > 0) {
+                            showSuccess("Book returned!\n" +
+                                "Overdue fine charged: £" +
+                                String.format("%.2f", fine));
+                        } else {
+                            showSuccess(
+                                "Book returned successfully! No fine.");
+                        }
+                        refreshBorrows();
+                        refreshBooks();
+                    } else {
+                        showError("Failed to return book.");
+                    }
+                }
+            }
+        } else if (choice == 1) {
+            if (borrowDAO.updateStatus(recordId, "Overdue")) {
+                showSuccess("Record #" + recordId +
+                    " marked as Overdue.");
+                refreshBorrows();
+            } else {
+                showError("Failed to update status.");
+            }
         }
     }
 
     private void deleteSelectedRecord(JTable table) {
         int row = table.getSelectedRow();
-        if (row < 0) { showError("Please select a record to delete."); return; }
-        int id = (int) table.getValueAt(row, 0);
-        if (JOptionPane.showConfirmDialog(this, "Delete record #" + id + "?", "Confirm",
-            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-            if (borrowDAO.deleteRecord(id)) { showSuccess("Record deleted successfully!"); refreshBorrows(); }
-            else showError("Failed to delete.");
+        if (row < 0) {
+            showError("Please select a record to delete."); return;
+        }
+        int recordId = (int) table.getValueAt(row, 0);
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+            "Are you sure you want to delete Record #" +
+            recordId + "?\nThis cannot be undone.",
+            "Confirm Delete",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            if (borrowDAO.deleteRecord(recordId)) {
+                showSuccess("Record deleted successfully!");
+                refreshBorrows();
+            } else {
+                showError("Failed to delete record.");
+            }
         }
     }
 
     private void showOverdueRecords() {
         List<BorrowRecord> overdue = borrowDAO.getOverdueRecords();
         if (overdue.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No overdue books!", "Overdue", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                "✓ No overdue books found!",
+                "Overdue Books",
+                JOptionPane.INFORMATION_MESSAGE);
             return;
         }
-        String[] cols = {"Record ID","Book ID","Member ID","Borrow Date","Due Date","Status"};
+        String[] cols = {"Record ID", "Book ID", "Member ID",
+                         "Borrow Date", "Due Date", "Status", "Fine (£)"};
         DefaultTableModel model = new DefaultTableModel(cols, 0);
         for (BorrowRecord r : overdue)
-            model.addRow(new Object[]{r.getRecordId(), r.getBookId(), r.getMemberId(), r.getBorrowDate(), r.getDueDate(), r.getReturnStatus()});
+            model.addRow(new Object[]{
+                r.getRecordId(), r.getBookId(), r.getMemberId(),
+                r.getBorrowDate(), r.getDueDate(), r.getReturnStatus(),
+                r.getFine() > 0
+                    ? String.format("£%.2f", r.getFine()) : "—"
+            });
         JTable t = new JTable(model);
         styleTable(t);
-        JOptionPane.showMessageDialog(this, new JScrollPane(t), "Overdue Records (" + overdue.size() + ")", JOptionPane.WARNING_MESSAGE);
+        t.setPreferredScrollableViewportSize(new Dimension(700, 200));
+        JOptionPane.showMessageDialog(this,
+            new JScrollPane(t),
+            "⚠ Overdue Records (" + overdue.size() + ")",
+            JOptionPane.WARNING_MESSAGE);
     }
 
-    // SEARCH PANEL 
+    // ── SEARCH PANEL ──────────────────────────────────────────────────────
 
     private JPanel buildSearchPanel() {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
@@ -508,16 +898,34 @@ public class LibraryGUI extends JFrame {
 
         JPanel topBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topBar.setBackground(Color.WHITE);
+
         JTextField searchField = new JTextField(20);
         searchField.setFont(new Font("SansSerif", Font.PLAIN, 13));
         searchField.setPreferredSize(new Dimension(200, 30));
+        searchField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(180, 180, 180)),
+            BorderFactory.createEmptyBorder(3, 8, 3, 8)));
+
         JComboBox<String> typeBox = new JComboBox<>(new String[]{
-            "Books (title/author/ID)", "Books by Category",
-            "Members (name/ID)", "Records by Member ID", "Records by Book ID"
+            "Books (title/author/ID/category)",
+            "Books by Category",
+            "Members (name/email/ID)",
+            "Records by Member ID",
+            "Records by Book ID",
+            "Records by Date Range"
         });
-        JButton searchBtn = styledButton("🔍 Search", new Color(30, 80, 140), null);
-        topBar.add(new JLabel("Search: ")); topBar.add(searchField);
-        topBar.add(new JLabel("  In: ")); topBar.add(typeBox); topBar.add(searchBtn);
+
+        JButton searchBtn = styledButton("🔍 Search",
+            new Color(30, 80, 140), null);
+        JButton clearBtn  = styledButton("✕ Clear",
+            new Color(120, 120, 120), null);
+
+        topBar.add(new JLabel("Search: "));
+        topBar.add(searchField);
+        topBar.add(new JLabel("  In: "));
+        topBar.add(typeBox);
+        topBar.add(searchBtn);
+        topBar.add(clearBtn);
 
         JPanel topSection = new JPanel(new BorderLayout());
         topSection.setBackground(Color.WHITE);
@@ -536,36 +944,98 @@ public class LibraryGUI extends JFrame {
 
         Runnable doSearch = () -> {
             String kw = searchField.getText().trim();
-            resultModel.setRowCount(0); resultModel.setColumnCount(0);
+            resultModel.setRowCount(0);
+            resultModel.setColumnCount(0);
             int idx = typeBox.getSelectedIndex();
+
             if (idx == 0) {
-                resultModel.setColumnIdentifiers(new Object[]{"ID","Title","Author","Category","Status"});
+                resultModel.setColumnIdentifiers(new Object[]{
+                    "ID","Title","Author","Category","Status"});
                 for (Book b : bookDAO.searchBooks(kw))
-                    resultModel.addRow(new Object[]{b.getBookId(), b.getTitle(), b.getAuthor(), b.getCategory(), b.getAvailabilityStatus()});
+                    resultModel.addRow(new Object[]{
+                        b.getBookId(), b.getTitle(), b.getAuthor(),
+                        b.getCategory(), b.getAvailabilityStatus()});
             } else if (idx == 1) {
-                resultModel.setColumnIdentifiers(new Object[]{"ID","Title","Author","Category","Status"});
+                resultModel.setColumnIdentifiers(new Object[]{
+                    "ID","Title","Author","Category","Status"});
                 for (Book b : bookDAO.filterByCategory(kw))
-                    resultModel.addRow(new Object[]{b.getBookId(), b.getTitle(), b.getAuthor(), b.getCategory(), b.getAvailabilityStatus()});
+                    resultModel.addRow(new Object[]{
+                        b.getBookId(), b.getTitle(), b.getAuthor(),
+                        b.getCategory(), b.getAvailabilityStatus()});
             } else if (idx == 2) {
-                resultModel.setColumnIdentifiers(new Object[]{"ID","Name","Email","Type"});
+                resultModel.setColumnIdentifiers(new Object[]{
+                    "ID","Name","Email","Type"});
                 for (Member m : memberDAO.searchMembers(kw))
-                    resultModel.addRow(new Object[]{m.getMemberId(), m.getMemberName(), m.getEmail(), m.getMembershipType()});
+                    resultModel.addRow(new Object[]{
+                        m.getMemberId(), m.getMemberName(),
+                        m.getEmail(), m.getMembershipType()});
             } else if (idx == 3) {
-                resultModel.setColumnIdentifiers(new Object[]{"Record ID","Book ID","Member ID","Borrow Date","Due Date","Status"});
-                try { for (BorrowRecord r : borrowDAO.getRecordsByMember(Integer.parseInt(kw)))
-                    resultModel.addRow(new Object[]{r.getRecordId(), r.getBookId(), r.getMemberId(), r.getBorrowDate(), r.getDueDate(), r.getReturnStatus()});
-                } catch (NumberFormatException ex) { showError("Enter a numeric ID."); }
-            } else {
-                resultModel.setColumnIdentifiers(new Object[]{"Record ID","Book ID","Member ID","Borrow Date","Due Date","Status"});
-                try { for (BorrowRecord r : borrowDAO.getRecordsByBook(Integer.parseInt(kw)))
-                    resultModel.addRow(new Object[]{r.getRecordId(), r.getBookId(), r.getMemberId(), r.getBorrowDate(), r.getDueDate(), r.getReturnStatus()});
-                } catch (NumberFormatException ex) { showError("Enter a numeric ID."); }
+                resultModel.setColumnIdentifiers(new Object[]{
+                    "Record ID","Book ID","Member ID",
+                    "Borrow Date","Due Date","Status","Fine"});
+                try {
+                    for (BorrowRecord r :
+                        borrowDAO.getRecordsByMember(Integer.parseInt(kw)))
+                        resultModel.addRow(new Object[]{
+                            r.getRecordId(), r.getBookId(), r.getMemberId(),
+                            r.getBorrowDate(), r.getDueDate(),
+                            r.getReturnStatus(),
+                            r.getFine() > 0
+                                ? String.format("£%.2f", r.getFine()) : "—"});
+                } catch (NumberFormatException ex) {
+                    showError("Please enter a numeric Member ID.");
+                }
+            } else if (idx == 4) {
+                resultModel.setColumnIdentifiers(new Object[]{
+                    "Record ID","Book ID","Member ID",
+                    "Borrow Date","Due Date","Status","Fine"});
+                try {
+                    for (BorrowRecord r :
+                        borrowDAO.getRecordsByBook(Integer.parseInt(kw)))
+                        resultModel.addRow(new Object[]{
+                            r.getRecordId(), r.getBookId(), r.getMemberId(),
+                            r.getBorrowDate(), r.getDueDate(),
+                            r.getReturnStatus(),
+                            r.getFine() > 0
+                                ? String.format("£%.2f", r.getFine()) : "—"});
+                } catch (NumberFormatException ex) {
+                    showError("Please enter a numeric Book ID.");
+                }
+            } else if (idx == 5) {
+                String from = JOptionPane.showInputDialog(this,
+                    "From date (yyyy-MM-dd):");
+                String to   = JOptionPane.showInputDialog(this,
+                    "To date (yyyy-MM-dd):");
+                if (from != null && to != null &&
+                    Validator.isValidDate(from) &&
+                    Validator.isValidDate(to)) {
+                    resultModel.setColumnIdentifiers(new Object[]{
+                        "Record ID","Book ID","Member ID",
+                        "Borrow Date","Due Date","Status","Fine"});
+                    for (BorrowRecord r :
+                        borrowDAO.filterByDateRange(from, to))
+                        resultModel.addRow(new Object[]{
+                            r.getRecordId(), r.getBookId(), r.getMemberId(),
+                            r.getBorrowDate(), r.getDueDate(),
+                            r.getReturnStatus(),
+                            r.getFine() > 0
+                                ? String.format("£%.2f", r.getFine()) : "—"});
+                } else {
+                    showError("Invalid date format. Use yyyy-MM-dd");
+                }
             }
             countLabel.setText("  Results: " + resultModel.getRowCount());
         };
 
         searchBtn.addActionListener(e -> doSearch.run());
         searchField.addActionListener(e -> doSearch.run());
+        clearBtn.addActionListener(e -> {
+            searchField.setText("");
+            resultModel.setRowCount(0);
+            resultModel.setColumnCount(0);
+            countLabel.setText("  Results: 0");
+        });
+
         return panel;
     }
 
@@ -577,24 +1047,31 @@ public class LibraryGUI extends JFrame {
         table.setSelectionBackground(new Color(184, 207, 229));
         table.setGridColor(new Color(220, 220, 220));
         table.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        table.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 13));
+        table.getTableHeader().setFont(
+            new Font("SansSerif", Font.BOLD, 13));
         table.getTableHeader().setBackground(new Color(30, 80, 140));
         table.getTableHeader().setForeground(Color.WHITE);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
     private JPanel buildFormPanel(Object... items) {
-        JPanel p = new JPanel(new GridLayout(items.length / 2, 2, 8, 8));
+        JPanel p = new JPanel(
+            new GridLayout(items.length / 2, 2, 8, 8));
         p.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
         for (Object item : items) {
-            if (item instanceof String s) { JLabel l = new JLabel(s); l.setFont(new Font("SansSerif", Font.PLAIN, 13)); p.add(l); }
-            else p.add((Component) item);
+            if (item instanceof String s) {
+                JLabel lbl = new JLabel(s);
+                lbl.setFont(new Font("SansSerif", Font.PLAIN, 13));
+                p.add(lbl);
+            } else {
+                p.add((Component) item);
+            }
         }
         return p;
     }
 
-    // Overloaded styledButton with ActionListener
-    private JButton styledButton(String text, Color bg, java.awt.event.ActionListener action) {
+    private JButton styledButton(String text, Color bg,
+                                  ActionListener action) {
         JButton btn = new JButton(text);
         btn.setBackground(bg);
         btn.setForeground(Color.WHITE);
@@ -604,8 +1081,12 @@ public class LibraryGUI extends JFrame {
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btn.setBorder(BorderFactory.createEmptyBorder(6, 14, 6, 14));
         btn.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) { btn.setBackground(bg.darker()); }
-            public void mouseExited(MouseEvent e)  { btn.setBackground(bg); }
+            public void mouseEntered(MouseEvent e) {
+                btn.setBackground(bg.darker());
+            }
+            public void mouseExited(MouseEvent e) {
+                btn.setBackground(bg);
+            }
         });
         if (action != null) btn.addActionListener(action);
         return btn;
@@ -613,12 +1094,14 @@ public class LibraryGUI extends JFrame {
 
     private void showSuccess(String msg) {
         setStatus("✓ " + msg);
-        JOptionPane.showMessageDialog(this, msg, "Success", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, msg,
+            "Success", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void showError(String msg) {
         setStatus("✗ " + msg);
-        JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, msg,
+            "Error", JOptionPane.ERROR_MESSAGE);
     }
 
     private void setStatus(String msg) {
