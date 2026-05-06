@@ -56,20 +56,45 @@ public class DatabaseConnection {
             )
         """);
 
+        stmt.execute("""
+            CREATE TABLE IF NOT EXISTS users (
+                user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL UNIQUE,
+                password TEXT NOT NULL
+            )
+        """);
+
+        // Sample books
         ResultSet rs = stmt.executeQuery("SELECT COUNT(*) AS cnt FROM books");
         if (rs.next() && rs.getInt("cnt") == 0) {
             stmt.execute("""
                 INSERT INTO books (title, author, category, availability_status) VALUES
                 ('Introduction to Java', 'John Smith', 'Programming', 'Available'),
                 ('Database Systems', 'Maria Garcia', 'Computer Science', 'Borrowed'),
-                ('Software Engineering Principles', 'Alan Brown', 'Engineering', 'Available')
+                ('Software Engineering Principles', 'Alan Brown', 'Engineering', 'Available'),
+                ('Clean Code', 'Robert C. Martin', 'Programming', 'Available'),
+                ('The Pragmatic Programmer', 'David Thomas', 'Programming', 'Available'),
+                ('Design Patterns', 'Gang of Four', 'Software Engineering', 'Available')
             """);
+        }
+
+        // Sample members
+        ResultSet rs2 = stmt.executeQuery("SELECT COUNT(*) AS cnt FROM members");
+        if (rs2.next() && rs2.getInt("cnt") == 0) {
             stmt.execute("""
                 INSERT INTO members (member_name, email, membership_type) VALUES
                 ('Alice Johnson', 'alice.johnson@stmarys.ac.uk', 'Student'),
                 ('Michael Lee', 'michael.lee@stmarys.ac.uk', 'Staff'),
-                ('Sara Ahmed', 'sara.ahmed@stmarys.ac.uk', 'Student')
+                ('Sara Ahmed', 'sara.ahmed@stmarys.ac.uk', 'Student'),
+                ('James Wilson', 'james.wilson@stmarys.ac.uk', 'Student'),
+                ('Emma Davis', 'emma.davis@stmarys.ac.uk', 'Staff'),
+                ('Oliver Brown', 'oliver.brown@stmarys.ac.uk', 'Student')
             """);
+        }
+
+        // Sample borrow records
+        ResultSet rs3 = stmt.executeQuery("SELECT COUNT(*) AS cnt FROM borrow_records");
+        if (rs3.next() && rs3.getInt("cnt") == 0) {
             stmt.execute("""
                 INSERT INTO borrow_records (book_id, member_id, borrow_date, due_date, return_status) VALUES
                 (2, 1, '2025-03-01', '2025-03-15', 'Borrowed'),
@@ -77,6 +102,13 @@ public class DatabaseConnection {
                 (3, 3, '2025-03-05', '2025-03-19', 'Borrowed')
             """);
         }
+
+        // Default admin user
+        ResultSet rs4 = stmt.executeQuery("SELECT COUNT(*) AS cnt FROM users");
+        if (rs4.next() && rs4.getInt("cnt") == 0) {
+            stmt.execute("INSERT INTO users (username, password) VALUES ('admin', 'library26')");
+        }
+
         stmt.close();
     }
 
